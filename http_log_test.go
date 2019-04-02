@@ -48,9 +48,7 @@ func TestApacheCombined(t *testing.T) {
 	}
 	ch := tailer.Tail()
 
-	logger := NewHTTPLogger(logFilename, logMaxSize, logMaxBackups, logMaxAge, logCompress)
-
-	apacheCompinedLogger := NewApacheCombinedLogger(logger)
+	apacheCompinedLogger := NewApacheCombinedLogger(logFilename, logMaxSize, logMaxBackups, logMaxAge, logCompress)
 
 	header := http.Header{}
 	header.Add("Referer", "/index.html")
@@ -65,13 +63,14 @@ func TestApacheCombined(t *testing.T) {
 		Uri:           "/test",
 		Protocol:      "HTTP/1.0",
 		Status:        200,
+		ElapsedTime:   1 * time.Second,
 	}
 
 	apacheCompinedLogger.Log(record)
 	time.Sleep(5 * time.Millisecond)
 	lastLog := <-ch
 
-	if !strings.HasSuffix(*lastLog, `127.0.0.1 - testuser [31/Dec/2014 12:13:24 +0000] "GET /test HTTP/1.0" 200 10 "/index.html" "test-client"`) {
-		t.Errorf("expected content to see %v, saw %v", `127.0.0.1 - testuser [31/Dec/2014 12:13:24 +0000] "GET /test HTTP/1.0" 200 10 "/index.html" "test-client"`, *lastLog)
+	if !strings.HasSuffix(*lastLog, `127.0.0.1 - testuser [31/Dec/2014 12:13:24 +0000] "GET /test HTTP/1.0" 200 10 "/index.html" "test-client" 1.0000`) {
+		t.Errorf("expected content to see %v, saw %v", `127.0.0.1 - testuser [31/Dec/2014 12:13:24 +0000] "GET /test HTTP/1.0" 200 10 "/index.html" "test-client" 1.0000`, *lastLog)
 	}
 }

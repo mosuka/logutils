@@ -28,7 +28,13 @@ import (
 
 func NewFileWriter(filename string, maxSize int, maxBackups int, maxAge int, compress bool) io.Writer {
 	var writer io.Writer
-	if filename != "" {
+
+	switch filename {
+	case "", os.Stderr.Name():
+		writer = os.Stderr
+	case os.Stdout.Name():
+		writer = os.Stdout
+	default:
 		writer = &lumberjack.Logger{
 			Filename:   filename,
 			MaxSize:    maxSize, // megabytes
@@ -36,8 +42,6 @@ func NewFileWriter(filename string, maxSize int, maxBackups int, maxAge int, com
 			MaxAge:     maxAge,   // days
 			Compress:   compress, // disabled by default
 		}
-	} else {
-		writer = os.Stderr
 	}
 
 	return writer
