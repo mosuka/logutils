@@ -21,23 +21,19 @@ import (
 	accesslog "github.com/mash/go-accesslog"
 )
 
-//func NewHTTPLogger(filename string, maxSize int, maxBackups int, maxAge int, compress bool) *log.Logger {
-//	writer := NewFileWriter(filename, maxSize, maxBackups, maxAge, compress)
-//
-//	logger := log.New(writer, "", 0)
-//
-//	return logger
-//}
+func NewHTTPLogger(filename string, maxSize int, maxBackups int, maxAge int, compress bool) *log.Logger {
+	writer := NewFileWriter(filename, maxSize, maxBackups, maxAge, compress)
+
+	logger := log.New(writer, "", 0)
+
+	return logger
+}
 
 type ApacheCombinedLogger struct {
 	Logger *log.Logger
 }
 
-func NewApacheCombinedLogger(filename string, maxSize int, maxBackups int, maxAge int, compress bool) *ApacheCombinedLogger {
-	writer := NewFileWriter(filename, maxSize, maxBackups, maxAge, compress)
-
-	logger := log.New(writer, "", 0)
-
+func NewApacheCombinedLogger(logger *log.Logger) *ApacheCombinedLogger {
 	return &ApacheCombinedLogger{
 		Logger: logger,
 	}

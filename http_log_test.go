@@ -48,11 +48,9 @@ func TestApacheCombined(t *testing.T) {
 	}
 	ch := tailer.Tail()
 
-	//logger := ApacheCombinedLogger{
-	//	Logger: NewHTTPLogger(logFilename, logMaxSize, logMaxBackups, logMaxAge, logCompress),
-	//}
+	logger := NewHTTPLogger(logFilename, logMaxSize, logMaxBackups, logMaxAge, logCompress)
 
-	logger := NewApacheCombinedLogger(logFilename, logMaxSize, logMaxBackups, logMaxAge, logCompress)
+	apacheCompinedLogger := NewApacheCombinedLogger(logger)
 
 	header := http.Header{}
 	header.Add("Referer", "/index.html")
@@ -69,7 +67,7 @@ func TestApacheCombined(t *testing.T) {
 		Status:        200,
 	}
 
-	logger.Log(record)
+	apacheCompinedLogger.Log(record)
 	time.Sleep(5 * time.Millisecond)
 	lastLog := <-ch
 
